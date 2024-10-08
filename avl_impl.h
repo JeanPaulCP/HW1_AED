@@ -196,126 +196,76 @@ AVLNode<T>* AVLTree<T>::remove(AVLNode<T>* rt, T key) {
                 // es una hoja
                 prev->left=nullptr;
                 delete current;
-                // Actualizando las alturas
-                int alturaPrevia{};
                 if (prev->right==nullptr){
-                    for (int i=ruta.size()-1; i >=0 ; --i) {
-                        if (i==ruta.size()-1){
-                            alturaPrevia=ruta[i]->height; // Probablemente igual a 1
-                            ruta[i]->height=0;
-                        }
-                        else if (ruta[i]->height==alturaPrevia+1) {
-                            if (ruta[i]->left==ruta[i+1]){
-                                if (ruta[i]->right!=nullptr){
-                                    if (ruta[i]->right->height+1==ruta[i]->height){
-                                        break;
-                                    }
-                                }
-                                alturaPrevia=ruta[i]->height;
-                                --(ruta[i]->height);
-                            }
-                            else{
-                                if (ruta[i]->left!=nullptr){
-                                    if (ruta[i]->left->height+1==ruta[i]->height){
-                                        break;
-                                    }
-                                }
-                                alturaPrevia=ruta[i]->height;
-                                --(ruta[i]->height);
-                            }
-                        }
-                        // Balanceo (solo si es necesario)
+                    // Actualizando las alturas
+                    // Necesitamos enlazar los nuevos nodos
+                    // a la hora de hacer el autobalanceo
+                    for (int i=ruta.size()-1;i>=0;--i) {
+                        ruta[i]->height=height(ruta[i]);
                         if (getBalance(ruta[i])>=2 || getBalance(ruta[i])<=-2){
+                            AVLNode<T>* tempNode=ruta[i];
                             ruta[i]=balancearNode(ruta[i]);
+                            if (i>0){
+                                // Haciendo los nuevos enlaces
+                                if (ruta[i-1]->left==tempNode){
+                                    ruta[i-1]->left=ruta[i];
+                                }
+                                else{
+                                    ruta[i-1]->right=ruta[i];
+                                }
+                            }
                         }
                     }
+                    rt=ruta[0];
                 }
             }
             else if (current->left!=nullptr && current->right==nullptr){
                 prev->left=current->left;
                 delete current;
                 // Actualizando las alturas
-                int alturaPrevia{};
-                for (int i=ruta.size()-1; i >=0 ; --i) {
-                    if (i==ruta.size()-1){
-                        if (ruta[i]->left->height+2==ruta[i]->height){
-                            if (ruta[i]->right!=nullptr){
-                                if (ruta[i]->right->height+1==ruta[i]->height){
-                                    break;
-                                }
-                            }
-                            alturaPrevia=ruta[i]->height;
-                            --(ruta[i]->height);
-                        }
-                    }
-                    else if (ruta[i]->height==alturaPrevia+1) {
-                        if (ruta[i]->left==ruta[i+1]){
-                            if (ruta[i]->right!=nullptr){
-                                if (ruta[i]->right->height+1==ruta[i]->height){
-                                    break;
-                                }
-                            }
-                            alturaPrevia=ruta[i]->height;
-                            --(ruta[i]->height);
-                        }
-                        else{
-                            if (ruta[i]->left!=nullptr){
-                                if (ruta[i]->left->height+1==ruta[i]->height){
-                                    break;
-                                }
-                            }
-                            alturaPrevia=ruta[i]->height;
-                            --(ruta[i]->height);
-                        }
-                    }
-                    // Balanceo (solo si es necesario)
+                // Necesitamos enlazar los nuevos nodos
+                // a la hora de hacer el autobalanceo
+                for (int i=ruta.size()-1;i>=0;--i) {
+                    ruta[i]->height=height(ruta[i]);
                     if (getBalance(ruta[i])>=2 || getBalance(ruta[i])<=-2){
+                        AVLNode<T>* tempNode=ruta[i];
                         ruta[i]=balancearNode(ruta[i]);
+                        if (i>0){
+                            // Haciendo los nuevos enlaces
+                            if (ruta[i-1]->left==tempNode){
+                                ruta[i-1]->left=ruta[i];
+                            }
+                            else{
+                                ruta[i-1]->right=ruta[i];
+                            }
+                        }
                     }
                 }
+                rt=ruta[0];
             }
             else if (current->left==nullptr && current->right!=nullptr){
                 prev->left=current->right;
                 delete current;
                 // Actualizando las alturas
-                int alturaPrevia{};
-                for (int i=ruta.size()-1; i >=0 ; --i) {
-                    if (i==ruta.size()-1){
-                        if (ruta[i]->left->height+2==ruta[i]->height){
-                            if (ruta[i]->right!=nullptr){
-                                if (ruta[i]->right->height+1==ruta[i]->height){
-                                    break;
-                                }
-                            }
-                            alturaPrevia=ruta[i]->height;
-                            --(ruta[i]->height);
-                        }
-                    }
-                    else if (ruta[i]->height==alturaPrevia+1) {
-                        if (ruta[i]->left==ruta[i+1]){
-                            if (ruta[i]->right!=nullptr){
-                                if (ruta[i]->right->height+1==ruta[i]->height){
-                                    break;
-                                }
-                            }
-                            alturaPrevia=ruta[i]->height;
-                            --(ruta[i]->height);
-                        }
-                        else{
-                            if (ruta[i]->left!=nullptr){
-                                if (ruta[i]->left->height+1==ruta[i]->height){
-                                    break;
-                                }
-                            }
-                            alturaPrevia=ruta[i]->height;
-                            --(ruta[i]->height);
-                        }
-                    }
-                    // Balanceo (solo si es necesario)
+                // Necesitamos enlazar los nuevos nodos
+                // a la hora de hacer el autobalanceo
+                for (int i=ruta.size()-1;i>=0;--i) {
+                    ruta[i]->height=height(ruta[i]);
                     if (getBalance(ruta[i])>=2 || getBalance(ruta[i])<=-2){
+                        AVLNode<T>* tempNode=ruta[i];
                         ruta[i]=balancearNode(ruta[i]);
+                        if (i>0){
+                            // Haciendo los nuevos enlaces
+                            if (ruta[i-1]->left==tempNode){
+                                ruta[i-1]->left=ruta[i];
+                            }
+                            else{
+                                ruta[i-1]->right=ruta[i];
+                            }
+                        }
                     }
                 }
+                rt=ruta[0];
             }
             else{
                 prev->left=current->right;
@@ -333,54 +283,50 @@ AVLNode<T>* AVLTree<T>::remove(AVLNode<T>* rt, T key) {
                 rightCurrent->left=current->left;
                 delete current;
                 // Actualizando las alturas
-                int alturaPrevia{};
-                for (int i=ruta.size()-1; i >=0 ; --i) {
-                    if (i==ruta.size()-1){
-                        if (ruta[i]->left->height+2==ruta[i]->height){
-                            if (ruta[i]->right!=nullptr){
-                                if (ruta[i]->right->height+1==ruta[i]->height){
-                                    break;
-                                }
+                // Necesitamos enlazar los nuevos nodos
+                // a la hora de hacer el autobalanceo
+                for (int i=rutaDerecha.size()-1;i>=0;--i) {
+                    rutaDerecha[i]->height=height(rutaDerecha[i]);
+                    if (getBalance(rutaDerecha[i])>=2 || getBalance(rutaDerecha[i])<=-2){
+                        AVLNode<T>* tempNode=rutaDerecha[i];
+                        rutaDerecha[i]=balancearNode(rutaDerecha[i]);
+                        if (i>0){
+                            // Haciendo los nuevos enlaces
+                            if (rutaDerecha[i-1]->left==tempNode){
+                                rutaDerecha[i-1]->left=rutaDerecha[i];
                             }
-                            alturaPrevia=ruta[i]->height;
-                            --(ruta[i]->height);
-                            ruta[i]->height+=(rightCurrent->left->height)+1;
-                        }
-                    }
-                    else if (ruta[i]->height==alturaPrevia+1) {
-                        if (ruta[i]->left==ruta[i+1]){
-                            if (ruta[i]->right!=nullptr){
-                                if (ruta[i]->right->height+1==ruta[i]->height){
-                                    break;
-                                }
+                            else{
+                                rutaDerecha[i-1]->right=rutaDerecha[i];
                             }
-                            alturaPrevia=ruta[i]->height;
-                            --ruta[i]->height;
-                            ruta[i]->height+=(rightCurrent->left->height)+1;
                         }
                         else{
-                            if (ruta[i]->left!=nullptr){
-                                if (ruta[i]->left->height+1==ruta[i]->height){
-                                    break;
-                                }
+                            // Haciendo los nuevos enlaces
+                            if (ruta[ruta.size()-1]->left==tempNode){
+                                ruta[ruta.size()-1]->left=rutaDerecha[0];
                             }
-                            alturaPrevia=ruta[i]->height;
-                            --ruta[i]->height;
-                            ruta[i]->height+=(rightCurrent->left->height)+1;
+                            else{
+                                ruta[ruta.size()-1]->right=rutaDerecha[0];
+                            }
                         }
                     }
-                    // Balanceo (solo si es necesario)
+                }
+                for (int i=ruta.size()-1;i>=0;--i) {
+                    ruta[i]->height=height(ruta[i]);
                     if (getBalance(ruta[i])>=2 || getBalance(ruta[i])<=-2){
+                        AVLNode<T>* tempNode=ruta[i];
                         ruta[i]=balancearNode(ruta[i]);
+                        if (i>0){
+                            // Haciendo los nuevos enlaces
+                            if (ruta[i-1]->left==tempNode){
+                                ruta[i-1]->left=ruta[i];
+                            }
+                            else{
+                                ruta[i-1]->right=ruta[i];
+                            }
+                        }
                     }
                 }
-                for (int i = 0; i < rutaDerecha.size(); ++i) {
-                    rutaDerecha[i]->height+=(rightCurrent->left->height)+1;
-                    // Balanceo (solo si es necesario)
-                    if (getBalance(ruta[i])>=2 || getBalance(ruta[i])<=-2){
-                        ruta[i]=balancearNode(ruta[i]);
-                    }
-                }
+                rt=ruta[0];
             }
         }
         else if (ubicacion==2){
@@ -390,125 +336,76 @@ AVLNode<T>* AVLTree<T>::remove(AVLNode<T>* rt, T key) {
                 prev->right=nullptr;
                 delete current;
                 // Actualizando las alturas
-                int alturaPrevia{};
                 if (prev->left==nullptr){
-                    for (int i=ruta.size()-1; i >=0 ; --i) {
-                        if (i==ruta.size()-1){
-                            alturaPrevia=ruta[i]->height; // Probablemente igual a 1
-                            ruta[i]->height=0;
-                        }
-                        else if (ruta[i]->height==alturaPrevia+1) {
-                            if (ruta[i]->left==ruta[i+1]){
-                                if (ruta[i]->right!=nullptr){
-                                    if (ruta[i]->right->height+1==ruta[i]->height){
-                                        break;
-                                    }
-                                }
-                                alturaPrevia=ruta[i]->height;
-                                --(ruta[i]->height);
-                            }
-                            else{
-                                if (ruta[i]->left!=nullptr){
-                                    if (ruta[i]->left->height+1==ruta[i]->height){
-                                        break;
-                                    }
-                                }
-                                alturaPrevia=ruta[i]->height;
-                                --(ruta[i]->height);
-                            }
-                        }
-                        // Balanceo (solo si es necesario)
+                    // Actualizando las alturas
+                    // Necesitamos enlazar los nuevos nodos
+                    // a la hora de hacer el autobalanceo
+                    for (int i=ruta.size()-1;i>=0;--i) {
+                        ruta[i]->height=height(ruta[i]);
                         if (getBalance(ruta[i])>=2 || getBalance(ruta[i])<=-2){
+                            AVLNode<T>* tempNode=ruta[i];
                             ruta[i]=balancearNode(ruta[i]);
+                            if (i>0){
+                                // Haciendo los nuevos enlaces
+                                if (ruta[i-1]->left==tempNode){
+                                    ruta[i-1]->left=ruta[i];
+                                }
+                                else{
+                                    ruta[i-1]->right=ruta[i];
+                                }
+                            }
                         }
                     }
+                    rt=ruta[0];
                 }
             }
             else if (current->left!=nullptr && current->right==nullptr){
                 prev->right=current->left;
                 delete current;
                 // Actualizando las alturas
-                int alturaPrevia{};
-                for (int i=ruta.size()-1; i >=0 ; --i) {
-                    if (i==ruta.size()-1){
-                        if (ruta[i]->right->height+2==ruta[i]->height){
-                            if (ruta[i]->left!=nullptr){
-                                if (ruta[i]->left->height+1==ruta[i]->height){
-                                    break;
-                                }
-                            }
-                            alturaPrevia=ruta[i]->height;
-                            --(ruta[i]->height);
-                        }
-                    }
-                    else if (ruta[i]->height==alturaPrevia+1) {
-                        if (ruta[i]->left==ruta[i+1]){
-                            if (ruta[i]->right!=nullptr){
-                                if (ruta[i]->right->height+1==ruta[i]->height){
-                                    break;
-                                }
-                            }
-                            alturaPrevia=ruta[i]->height;
-                            --(ruta[i]->height);
-                        }
-                        else{
-                            if (ruta[i]->left!=nullptr){
-                                if (ruta[i]->left->height+1==ruta[i]->height){
-                                    break;
-                                }
-                            }
-                            alturaPrevia=ruta[i]->height;
-                            --(ruta[i]->height);
-                        }
-                    }
-                    // Balanceo (solo si es necesario)
+                // Necesitamos enlazar los nuevos nodos
+                // a la hora de hacer el autobalanceo
+                for (int i=ruta.size()-1;i>=0;--i) {
+                    ruta[i]->height=height(ruta[i]);
                     if (getBalance(ruta[i])>=2 || getBalance(ruta[i])<=-2){
+                        AVLNode<T>* tempNode=ruta[i];
                         ruta[i]=balancearNode(ruta[i]);
+                        if (i>0){
+                            // Haciendo los nuevos enlaces
+                            if (ruta[i-1]->left==tempNode){
+                                ruta[i-1]->left=ruta[i];
+                            }
+                            else{
+                                ruta[i-1]->right=ruta[i];
+                            }
+                        }
                     }
                 }
+                rt=ruta[0];
             }
             else if (current->left==nullptr && current->right!=nullptr){
                 prev->right=current->right;
                 delete current;
                 // Actualizando las alturas
-                int alturaPrevia{};
-                for (int i=ruta.size()-1; i >=0 ; --i) {
-                    if (i==ruta.size()-1){
-                        if (ruta[i]->right->height+2==ruta[i]->height){
-                            if (ruta[i]->left!=nullptr){
-                                if (ruta[i]->left->height+1==ruta[i]->height){
-                                    break;
-                                }
-                            }
-                            alturaPrevia=ruta[i]->height;
-                            --(ruta[i]->height);
-                        }
-                    }
-                    else if (ruta[i]->height==alturaPrevia+1) {
-                        if (ruta[i]->left==ruta[i+1]){
-                            if (ruta[i]->right!=nullptr){
-                                if (ruta[i]->right->height+1==ruta[i]->height){
-                                    break;
-                                }
-                            }
-                            alturaPrevia=ruta[i]->height;
-                            --(ruta[i]->height);
-                        }
-                        else{
-                            if (ruta[i]->left!=nullptr){
-                                if (ruta[i]->left->height+1==ruta[i]->height){
-                                    break;
-                                }
-                            }
-                            alturaPrevia=ruta[i]->height;
-                            --(ruta[i]->height);
-                        }
-                    }
-                    // Balanceo (solo si es necesario)
+                // Necesitamos enlazar los nuevos nodos
+                // a la hora de hacer el autobalanceo
+                for (int i=ruta.size()-1;i>=0;--i) {
+                    ruta[i]->height=height(ruta[i]);
                     if (getBalance(ruta[i])>=2 || getBalance(ruta[i])<=-2){
+                        AVLNode<T>* tempNode=ruta[i];
                         ruta[i]=balancearNode(ruta[i]);
+                        if (i>0){
+                            // Haciendo los nuevos enlaces
+                            if (ruta[i-1]->left==tempNode){
+                                ruta[i-1]->left=ruta[i];
+                            }
+                            else{
+                                ruta[i-1]->right=ruta[i];
+                            }
+                        }
                     }
                 }
+                rt=ruta[0];
             }
             else{
                 prev->right=current->right;
@@ -526,54 +423,50 @@ AVLNode<T>* AVLTree<T>::remove(AVLNode<T>* rt, T key) {
                 rightCurrent->left=current->left;
                 delete current;
                 // Actualizando las alturas
-                int alturaPrevia{};
-                for (int i=ruta.size()-1; i >=0 ; --i) {
-                    if (i==ruta.size()-1){
-                        if (ruta[i]->right->height+2==ruta[i]->height){
-                            if (ruta[i]->left!=nullptr){
-                                if (ruta[i]->left->height+1==ruta[i]->height){
-                                    break;
-                                }
+                // Necesitamos enlazar los nuevos nodos
+                // a la hora de hacer el autobalanceo
+                for (int i=rutaDerecha.size()-1;i>=0;--i) {
+                    rutaDerecha[i]->height=height(rutaDerecha[i]);
+                    if (getBalance(rutaDerecha[i])>=2 || getBalance(rutaDerecha[i])<=-2){
+                        AVLNode<T>* tempNode=rutaDerecha[i];
+                        rutaDerecha[i]=balancearNode(rutaDerecha[i]);
+                        if (i>0){
+                            // Haciendo los nuevos enlaces
+                            if (rutaDerecha[i-1]->left==tempNode){
+                                rutaDerecha[i-1]->left=rutaDerecha[i];
                             }
-                            alturaPrevia=ruta[i]->height;
-                            --(ruta[i]->height);
-                            ruta[i]->height+=(rightCurrent->left->height)+1;
-                        }
-                    }
-                    else if (ruta[i]->height==alturaPrevia+1) {
-                        if (ruta[i]->left==ruta[i+1]){
-                            if (ruta[i]->right!=nullptr){
-                                if (ruta[i]->right->height+1==ruta[i]->height){
-                                    break;
-                                }
+                            else{
+                                rutaDerecha[i-1]->right=rutaDerecha[i];
                             }
-                            alturaPrevia=ruta[i]->height;
-                            --ruta[i]->height;
-                            ruta[i]->height+=(rightCurrent->left->height)+1;
                         }
                         else{
-                            if (ruta[i]->left!=nullptr){
-                                if (ruta[i]->left->height+1==ruta[i]->height){
-                                    break;
-                                }
+                            // Haciendo los nuevos enlaces
+                            if (ruta[ruta.size()-1]->left==tempNode){
+                                ruta[ruta.size()-1]->left=rutaDerecha[0];
                             }
-                            alturaPrevia=ruta[i]->height;
-                            --ruta[i]->height;
-                            ruta[i]->height+=(rightCurrent->left->height)+1;
+                            else{
+                                ruta[ruta.size()-1]->right=rutaDerecha[0];
+                            }
                         }
                     }
-                    // Balanceo (solo si es necesario)
+                }
+                for (int i=ruta.size()-1;i>=0;--i) {
+                    ruta[i]->height=height(ruta[i]);
                     if (getBalance(ruta[i])>=2 || getBalance(ruta[i])<=-2){
+                        AVLNode<T>* tempNode=ruta[i];
                         ruta[i]=balancearNode(ruta[i]);
+                        if (i>0){
+                            // Haciendo los nuevos enlaces
+                            if (ruta[i-1]->left==tempNode){
+                                ruta[i-1]->left=ruta[i];
+                            }
+                            else{
+                                ruta[i-1]->right=ruta[i];
+                            }
+                        }
                     }
                 }
-                for (int i = 0; i < rutaDerecha.size(); ++i) {
-                    rutaDerecha[i]->height+=(rightCurrent->left->height)+1;
-                    // Balanceo (solo si es necesario)
-                    if (getBalance(ruta[i])>=2 || getBalance(ruta[i])<=-2){
-                        ruta[i]=balancearNode(ruta[i]);
-                    }
-                }
+                rt=ruta[0];
             }
         }
         else if (ubicacion==0){
@@ -608,13 +501,25 @@ AVLNode<T>* AVLTree<T>::remove(AVLNode<T>* rt, T key) {
                 rightCurrent->left=current->left;
                 delete current;
                 // Actualizando las alturas
-                for (int i = 0; i < rutaDerecha.size(); ++i) {
-                    rutaDerecha[i]->height+=(rightCurrent->left->height)+1;
-                    // Balanceo (solo si es necesario)
-                    if (getBalance(ruta[i])>=2 || getBalance(ruta[i])<=-2){
-                        ruta[i]=balancearNode(ruta[i]);
+                // Necesitamos enlazar los nuevos nodos
+                // a la hora de hacer el autobalanceo
+                for (int i=rutaDerecha.size()-1;i>=0;--i) {
+                    rutaDerecha[i]->height=height(rutaDerecha[i]);
+                    if (getBalance(rutaDerecha[i])>=2 || getBalance(rutaDerecha[i])<=-2){
+                        AVLNode<T>* tempNode=rutaDerecha[i];
+                        rutaDerecha[i]=balancearNode(rutaDerecha[i]);
+                        if (i>0){
+                            // Haciendo los nuevos enlaces
+                            if (rutaDerecha[i-1]->left==tempNode){
+                                rutaDerecha[i-1]->left=rutaDerecha[i];
+                            }
+                            else{
+                                rutaDerecha[i-1]->right=rutaDerecha[i];
+                            }
+                        }
                     }
                 }
+                rt=rutaDerecha[0];
             }
         }
         return rt;
