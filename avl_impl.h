@@ -51,8 +51,8 @@ AVLNode<T>* AVLTree<T>::rightRotate(AVLNode<T>* y) {
     y->left=z->right;
     z->right=y;
     y=z;
-    z->height=height(z);
     y->height=height(y);
+    y->right->height=height(y->right);
     return y;
 }
 
@@ -62,8 +62,8 @@ AVLNode<T>* AVLTree<T>::leftRotate(AVLNode<T>* x) {
     x->right=z->left;
     z->left=x;
     x=z;
-    z->height=height(z);
     x->height=height(x);
+    x->left->height=height(x->left);
     return x;
 }
 
@@ -122,8 +122,8 @@ AVLNode<T>* AVLTree<T>::insert(AVLNode<T>* node, T key) {
                 if (current->height==0){
                     cambiarAltura=true;
                 }
-                ruta.push_back(current);
             }
+            ruta.push_back(current); // Cambio hecho aquí
             current=current->left; // Apunta al nodo insertado o sigue
         }
         else{
@@ -134,22 +134,33 @@ AVLNode<T>* AVLTree<T>::insert(AVLNode<T>* node, T key) {
                 if (current->height==0){
                     cambiarAltura=true;
                 }
-                ruta.push_back(current);
             }
+            ruta.push_back(current); // Cambio hecho aquí
             current=current->right; // Apunta al nodo insertado o sigue
         }
     }
     ruta.push_back(current);
     if (cambiarAltura){
         // Actualizando las alturas
+        // Necesitamos enlazar los nuevos nodos
+        // a la hora de hacer el autobalanceo
         for (int i=ruta.size()-2;i>=0;--i) {
-            if (ruta[i]->height==ruta[i+1]->height){
-                ++(ruta[i]->height);
-            }
+            ruta[i]->height=height(ruta[i]);
             if (getBalance(ruta[i])>=2 || getBalance(ruta[i])<=-2){
+                AVLNode<T>* tempNode=ruta[i];
                 ruta[i]=balancearNode(ruta[i]);
+                if (i>0){
+                    // Haciendo los nuevos enlaces
+                    if (ruta[i-1]->left==tempNode){
+                        ruta[i-1]->left=ruta[i];
+                    }
+                    else{
+                        ruta[i-1]->right=ruta[i];
+                    }
+                }
             }
         }
+        node=ruta[0];
     }
     return node;
 }

@@ -22,7 +22,7 @@ int main(){
     cout<<tree.height()<<endl;
     //ASSERT_TRUE(tree.height() == 2);
 
-    tree.insert(50);
+    tree.insert(50); // Error aquí en el balanceo del árbol
     cout<<tree.height()<<endl;
     //ASSERT_TRUE(tree.height() == 3);
 
